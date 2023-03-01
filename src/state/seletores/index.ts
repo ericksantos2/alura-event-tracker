@@ -1,5 +1,7 @@
 import { selector } from 'recoil';
+import { IEvento } from '../../interfaces/IEvento';
 import { filtroDeEventos, listaDeEventosState } from '../atom';
+import axios from 'axios';
 
 export const eventosFiltradosState = selector({
   key: 'eventosFiltradosState',
@@ -18,3 +20,15 @@ export const eventosFiltradosState = selector({
     return eventos;
   },
 });
+
+export const eventosAsync = selector({
+  key: 'eventosAsync',
+  get: async () => {
+    const respostaHttp = await axios.get('http://localhost:8080/eventos')
+    return respostaHttp.data.map((evento: IEvento) => ({
+      ...evento,
+      inicio: new Date(evento.inicio),
+      fim: new Date(evento.fim)
+    }))
+  }
+})
